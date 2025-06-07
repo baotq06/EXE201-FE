@@ -1,0 +1,10 @@
+.layout-h {
+  position: fixed;
+  width: 100%;
+}
+
+.layout-n {
+  position: fixed;
+  width: 100%;
+  top: 70px;
+}

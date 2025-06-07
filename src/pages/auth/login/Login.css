@@ -1,0 +1,114 @@
+
+.login-body{
+    height: 90vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-contain{
+    width: 60%;
+    height: 500px;
+    display: flex;
+}
+
+.login-right{
+    width: 50%;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 0px 10px 10px 0px;
+    padding: 32px;
+    box-shadow:5px 5px 5px rgba(0, 0, 0, 0.3);
+    font-size: 18px;
+
+}
+
+ .login-h1{
+    color: rgba(2, 9, 206, 0.845);
+    font-size: 30px;
+    font-weight: 400;
+    margin-bottom: 16px;
+    text-align: center;
+    margin-top: 10px;
+
+}
+.login-group{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.login-input{
+    /* flex-basis: 30px; */
+    height: 40px;
+    width: 100%;
+    border-radius: 8px;
+   border: 1px solid #ccc;
+    padding: 0 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+#login-radio{
+    cursor: pointer;
+}
+
+.login-s3{
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+}
+.login-label{
+    margin-bottom: 2px;
+}
+#loginBTN{
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    background-color:  rgba(2, 9, 206, 0.845);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    margin: 16px 0;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+#loginBTN:hover{
+    background-color:  rgb(71, 77, 255);
+}
+
+.login-left{
+    height: 100%;
+    width: 50%;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    border-radius: 8px 0px 0px 8px;
+}
+.login-image{
+    height: 100%;
+    width: 100%;
+    border-radius: 12px 12px 0px 0px;
+    border: 1px solid #ccc;
+    border-radius: 8px 0px 0px 8px;
+}
+.foget-text{
+    color: rgb(129, 128, 128);
+}
+
+.foget-text:hover{
+    color: rgb(64, 61, 213);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.login-eye-icon{
+    position: absolute;
+    top: 50px ;
+    right: 20px;
+}
+
+.login-eye{
+    position: relative;
+}

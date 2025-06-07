@@ -1,0 +1,31 @@
+.headercontaint {
+    background-color: blue;
+    width: 100% !important;
+    height: 70px;
+    display: flex;
+    font-size: 25px;
+    color: white;
+}
+
+.iconheader {
+    width: 70px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 70%;
+}
+
+.fa-solid {
+    color: white;
+}
+
+.tenheader {
+    width: 180px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 50px;
+
+}

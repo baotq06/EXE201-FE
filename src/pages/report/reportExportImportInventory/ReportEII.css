@@ -1,0 +1,112 @@
+.rcbody {
+    background-color: #c2c2c2;
+    height: 90vh;
+    overflow: auto;
+    width: 100%;
+    height: 100vh;
+    padding: 15px 30px;
+    padding-bottom: 60px;
+    font-size: 16px;
+    overflow: auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.headerListP {
+    position: relative;
+}
+
+.rcbody .rcframe {
+    height: 85vh;
+    overflow: auto;
+    background-color: white;
+    width: 98%;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.rcframe .rctitle {
+    font-size: 35px;
+    color: #0b08ab;
+    margin: 20px;
+}
+
+.rcbody .rcSearch {
+    display: flex;
+    border-radius: 10px;
+    width: 100%;
+    height: 10%;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+}
+
+.rcSearch .rcInput {
+    display: flex;
+    flex-direction: column;
+    flex: 4;
+    justify-content: center;
+    padding-left:12%;
+}
+
+.rcInput .rcbox1 {
+    display: flex;
+    margin: 10px;
+
+}
+
+.rcbox1 .rcbox2 {
+    flex: 1;
+}
+
+.rcbox1 .rcbox3 {
+    flex: 2
+}
+
+.rcbox3 input[type="date"] {
+    height: 30px;
+    border: none;
+    outline: none;
+    width: 60%;
+    font-size: 16px;
+    background-color: #c2c2c2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rcbbox {
+    flex: 0.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rcbbox select {
+    width: 100%;
+    height: 40px;
+    background-color: #0b08ab;
+    color: white;
+    border: none;
+    padding-left: 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+}
+
+.rcbbox button:active {
+    background-color: #181656;
+}
+
+.rcChart {
+    height: 70%;
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    align-items: center;
+    text-align: center;
+}
