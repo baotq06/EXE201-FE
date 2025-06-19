@@ -3,6 +3,7 @@ import React from "react";
 import { useRoutes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ProtectedRoute from "./role/ProtectedRoute";
 
 import Home from "./pages/home/Home";
 import ConfirmOTP from "./pages/auth/confirmOTP/ConfirmOTP";
@@ -31,122 +32,204 @@ import ListInventory from "./pages/inventory/listInventory/ListInventory";
 import ReportImport from "./pages/report/reportImport/ReportImport";
 import ReportInventory from "./pages/report/reportInventory/ReportInventory";
 import ReportEII from "./pages/report/reportExportImportInventory/ReportEII";
+import AccessDenied from "./pages/accessDenied/AccessDenied";
+import NotFound from "./pages/notFound/NotFound";
 
 const App = () => {
   const routes = useRoutes([
+    // Public routes (no login required)
+    { path: "/login", element: <Login /> },
+    { path: "/register", element: <Register /> },
+    { path: "/forgot-password", element: <ForgetPassword /> },
+    { path: "/confirm-OTP", element: <ConfirmOTP /> },
+    { path: "/reset-password", element: <ResetPassword /> },
+    { path: "/access-denied", element: <AccessDenied /> },
+
+    // Protected routes
     {
       path: "/",
-      element: <Home />,
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <Home />
+        </ProtectedRoute>
+      ),
     },
     {
-      path: "/confirm-OTP",
-      element: <ConfirmOTP />,
+      path: "/information/:userId",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <Information />
+        </ProtectedRoute>
+      ),
     },
     {
-      path: "/reset-password",
-      element: <ResetPassword />,
+      path: "/createdProduct",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <CreatedProduct />
+        </ProtectedRoute>
+      ),
     },
     {
-      path: "/forgot-password",
-      element: <ForgetPassword />,
+      path: "/editProduct/:productId",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <EditProduct />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/listProduct",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ListProduct />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/infoProduct/:productId",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <InforProduct />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/confirmDeleteProduct",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ConfirmDeleteProduct />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/createdAgency",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <CreatedAgency />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/inforAgency/:type/:supplyId",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <InforAgency />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/listAgency",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ListAgency />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/listImportSlip/:type",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ListImportSlip />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/createdImportSlip/:type",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <CreatedImportSlip />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/inforImportSlip/:importSlipId",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <InforImportSlip />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/listExportSlip/:type",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ListExportSlip />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/createdExportSlip/:type",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <CreatedExportSlip />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/inforExportSlip/:exportSlipId",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <InforExportSlip />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/createdInventory",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <CreatedInventory />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/inforInventory/:recordInventoryId",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <InforInventory />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/listInventory",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ListInventory />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/report-import",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ReportImport />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/report-inventory",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ReportInventory />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/report-export-import-inventory",
+      element: (
+        <ProtectedRoute userRole={localStorage.getItem("userRole")}>
+          <ReportEII />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/login",
       element: <Login />,
     },
-    {
-      path: "/register",
-      element: <Register />,
-    },
-    {
-      path: "/information/:userId",
-      element: <Information />,
-    },
-    {
-      path: "/createdProduct",
-      element: <CreatedProduct />,
-    },
-    {
-      path: "/editProduct/:productId",
-      element: <EditProduct />,
-    },
-    {
-      path: "/listProduct",
-      element: <ListProduct />,
-    },
-    {
-      path: "/infoProduct/:productId",
-      element: <InforProduct />,
-    },
-    {
-      path: "/confirmDeleteProduct",
-      element: <ConfirmDeleteProduct />,
-    },
-    {
-      path: "/createdAgency",
-      element: <CreatedAgency />,
-    },
-    {
-      path: "/inforAgency/:type/:supplyId",
-      element: <InforAgency />,
-    },
-    {
-      path: "/listAgency",
-      element: <ListAgency />,
-    },
-    {
-      path: "/listImportSlip/:type",
-      element: <ListImportSlip />,
-    },
-    {
-      path: "/createdImportSlip/:type",
-      element: <CreatedImportSlip />,
-    },
-    {
-      path: "/inforImportSlip/:importSlipId",
-      element: <InforImportSlip />,
-    },
-    {
-      path: "/listExportSlip/:type",
-      element: <ListExportSlip />,
-    },
-    {
-      path: "/createdExportSlip/:type",
-      element: <CreatedExportSlip />,
-    },
-    {
-      path: "/inforExportSlip/:exportSlipId",
-      element: <InforExportSlip />,
-    },
-    {
-      path: "/createdInventory",
-      element: <CreatedInventory />,
-    },
-    {
-      path: "/inforInventory/:recordInventoryId",
-      element: <InforInventory />,
-    },
-    {
-      path: "/listInventory",
-      element: <ListInventory />,
-    },
-    {
-      path: "/report-import",
-      element: <ReportImport />,
-    },
-    {
-      path: "/report-inventory",
-      element: <ReportInventory />,
-    },
-    {
-      path: "/report-export-import-inventory",
-      element: <ReportEII />,
-    },
-    {
-      path: "*",
-      element: <div>404: Page not found!</div>,
-    },
+
+    { path: "*", element: <NotFound /> },
   ]);
+
   return (
     <>
       <ToastContainer />

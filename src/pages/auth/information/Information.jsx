@@ -9,7 +9,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/userSlice";
-
+import {
+  validateEmail,
+  validatePhoneNumber,
+} from "@/utils/validation/validation";
 
 const Information = () => {
   const [userInf, setUserInf] = useState({
@@ -25,6 +28,14 @@ const Information = () => {
     avatar: "",
   });
 
+  const [errors, setErrors] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    address: "",
+    gender: "",
+  });
+
   const [isRefresh, setIsRefresh] = useState(false);
 
   const [avatar, setAvatar] = useState("");
@@ -34,6 +45,7 @@ const Information = () => {
   const dispath = useDispatch();
 
   const navigate = useNavigate();
+
   useEffect(() => {
     const getUser = async () => {
       const respone = await getUserById(userId);
@@ -64,16 +76,72 @@ const Information = () => {
     getUser();
   }, [isRefresh]);
 
+  // Validate từng trường
+  const validateField = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "fullName":
+        if (!value) error = "Vui lòng nhập họ và tên";
+        else if (value.length < 2) error = "Họ và tên phải có ít nhất 2 ký tự";
+        else if (value.length > 50)
+          error = "Họ và tên không được vượt quá 50 ký tự";
+        break;
+      case "email":
+        const emailCheck = validateEmail(value);
+        if (!emailCheck.isValid) error = emailCheck.message;
+        break;
+      case "phoneNumber":
+        const phoneCheck = validatePhoneNumber(value);
+        if (!phoneCheck.isValid) error = phoneCheck.message;
+        break;
+      case "address":
+        if (!value) error = "Vui lòng nhập địa chỉ";
+        else if (value.length < 5) error = "Địa chỉ phải có ít nhất 5 ký tự";
+        else if (value.length > 200)
+          error = "Địa chỉ không được vượt quá 200 ký tự";
+        break;
+      case "gender":
+        if (!value) error = "Vui lòng chọn giới tính";
+        else if (!["male", "fermale", "other"].includes(value))
+          error = "Giới tính không hợp lệ";
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
+
+  // Validate realtime khi nhập
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserInf({
       ...userInf,
       [name]: value,
     });
+    setErrors({
+      ...errors,
+      [name]: validateField(name, value),
+    });
+  };
+
+  // Validate toàn bộ form khi submit
+  const validateForm = () => {
+    const newErrors = {
+      fullName: validateField("fullName", userInf.fullName),
+      email: validateField("email", userInf.email),
+      phoneNumber: validateField("phoneNumber", userInf.phoneNumber),
+      address: validateField("address", userInf.address),
+      gender: validateField("gender", userInf.gender),
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((err) => err !== "");
   };
 
   const handleUpdate = async () => {
-    console.log(userInf);
+    if (!validateForm()) {
+      toast.error("Vui lòng kiểm tra lại thông tin!");
+      return;
+    }
     await editProfile(userInf, userId);
     toast.success("Cập nhật thông tin thành công");
     setIsRefresh(!isRefresh);
@@ -118,7 +186,7 @@ const Information = () => {
               type="file"
               accept="image/*"
               style={{ display: "none" }}
-              onChange={(e) => handleFileChange(e)}
+              onChange={handleFileChange}
             />
             <i
               className="fa-solid fa-pen"
@@ -139,50 +207,58 @@ const Information = () => {
               <label className="info-label" htmlFor="infoFullName">
                 Họ và tên
               </label>
-              {/* <input className="info-input" type="text" /> */}
               <input
-                className="info-input"
+                className={`info-input ${errors.fullName ? "error" : ""}`}
                 value={userInf.fullName}
                 name="fullName"
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
               />
+              {errors.fullName && (
+                <div className="error-message">{errors.fullName}</div>
+              )}
             </div>
             <div className="info-group-field">
               <label className="info-label" htmlFor="infoEmail">
                 Email
               </label>
-              {/* <input className="info-input" type="text" /> */}
               <input
-                className="info-input"
+                className={`info-input ${errors.email ? "error" : ""}`}
                 value={userInf.email}
                 name="email"
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
               />
+              {errors.email && (
+                <div className="error-message">{errors.email}</div>
+              )}
             </div>
             <div className="info-group-field">
               <label className="info-label" htmlFor="infoPhone">
                 Số điện thoại
               </label>
-              {/* <input className="info-input" type="text" /> */}
               <input
-                className="info-input"
+                className={`info-input ${errors.phoneNumber ? "error" : ""}`}
                 value={userInf.phoneNumber}
                 name="phoneNumber"
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
               />
+              {errors.phoneNumber && (
+                <div className="error-message">{errors.phoneNumber}</div>
+              )}
             </div>
             <div className="info-group-field">
               <label className="info-label" htmlFor="infoStaffCode">
                 Mã nhân viên
               </label>
-              {/* <input className="info-input" type="text" /> */}
-              <input className="info-input" value={userInf.staffCode} readOnly />
+              <input
+                className="info-input"
+                value={userInf.staffCode}
+                readOnly
+              />
             </div>
             <div className="info-group-field">
               <label className="info-label" htmlFor="infoPosition">
                 Chức vụ
               </label>
-              {/* <input className="info-input" type="text" /> */}
               <input
                 className="info-input"
                 value={userInf.role == "manager" ? "Quản lý" : "Nhân viên"}
@@ -193,13 +269,15 @@ const Information = () => {
               <label className="info-label" htmlFor="infoAddress">
                 Địa chỉ
               </label>
-              {/* <input className="info-input" type="text" /> */}
               <input
-                className="info-input"
+                className={`info-input ${errors.address ? "error" : ""}`}
                 value={userInf.address}
                 name="address"
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
               />
+              {errors.address && (
+                <div className="error-message">{errors.address}</div>
+              )}
             </div>
             <div className="info-group-field">
               <label className="info-label" htmlFor="infoGender">
@@ -207,7 +285,9 @@ const Information = () => {
               </label>
               <select
                 name="gender"
-                onChange={(e) => handleChange(e)}
+                value={userInf.gender}
+                onChange={handleChange}
+                className={`info-input ${errors.gender ? "error" : ""}`}
                 style={{
                   width: "100%",
                   borderRadius: "8px",
@@ -215,24 +295,24 @@ const Information = () => {
                   padding: "0 20px",
                 }}
               >
-                <option>
-                  {userInf.gender === "male"
-                    ? "Nam"
-                    : userInf.gender === "fermale"
-                    ? "Nữ"
-                    : "Khác"}
-                </option>
+                <option value="">Chọn giới tính</option>
                 <option value="male">Nam</option>
                 <option value="fermale">Nữ</option>
                 <option value="other">Khác</option>
               </select>
+              {errors.gender && (
+                <div className="error-message">{errors.gender}</div>
+              )}
             </div>
             <div className="info-group-field">
               <label className="info-label" htmlFor="infoDate">
                 Ngày vào làm
               </label>
-              {/* <input className="info-input" type="text" /> */}
-              <input className="info-input" value={userInf.startDate} readOnly />
+              <input
+                className="info-input"
+                value={userInf.startDate}
+                readOnly
+              />
             </div>
 
             <div className="button-section">

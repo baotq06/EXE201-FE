@@ -1,4 +1,9 @@
-import { authInstance, publicInstance, request, requestWithToken } from "@/utils/axios-http";
+import {
+  authInstance,
+  publicInstance,
+  request,
+  requestWithToken,
+} from "@/utils/axios-http";
 
 export const registerAPI = async (data) => {
   try {
@@ -73,6 +78,7 @@ export const login = async (data) => {
     const { accessToken, refreshToken, user } = response.data.data;
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
+    localStorage.setItem("userRole", user.role);
 
     return user;
   } catch (error) {
@@ -171,7 +177,6 @@ export const editProfile = async (data, userId) => {
     console.error(error);
     throw error;
   }
-
 };
 
 export const uploadAvatar = async (data, userId) => {

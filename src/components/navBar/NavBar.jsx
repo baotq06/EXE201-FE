@@ -1,12 +1,13 @@
 /* eslint-disable */
 import React from "react";
-
 import "./NavBar.css";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ROLES } from "@/role/roles";
+
 const NavBar = ({ isOpen, setIsOpen }) => {
   const user = useSelector((state) => state.user);
-
+  const userRole = localStorage.getItem("userRole");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,7 +17,7 @@ const NavBar = ({ isOpen, setIsOpen }) => {
   };
 
   return (
-    <div className="main" style={{display: isOpen ? "block" : "none"}}>
+    <div className="main" style={{ display: isOpen ? "block" : "none" }}>
       <div className="navBar">
         <div className="navBar-user">
           <div className="user-avt">
@@ -30,6 +31,7 @@ const NavBar = ({ isOpen, setIsOpen }) => {
         <hr />
 
         <div className="navBar-menu">
+          {/* Tổng quan - ai cũng xem được */}
           <div className="navBar-menu-item">
             <p
               onClick={() => navigate("/")}
@@ -39,10 +41,10 @@ const NavBar = ({ isOpen, setIsOpen }) => {
             </p>
           </div>
 
+          {/* Xuất - nhập với NCC - chung cho cả 2 role */}
           <div className="navBar-menu-item">
             <div className="menu-item-title">
               <p>
-                {" "}
                 <i className="fa-solid fa-clipboard icon-navbar"></i>Xuất - nhập
                 với NCC
               </p>
@@ -85,6 +87,7 @@ const NavBar = ({ isOpen, setIsOpen }) => {
             </div>
           </div>
 
+          {/* Xuất - nhập với nội bộ - chung cho cả 2 role */}
           <div className="navBar-menu-item">
             <div className="menu-item-title">
               <p>
@@ -109,7 +112,6 @@ const NavBar = ({ isOpen, setIsOpen }) => {
                   Phiếu xuất kho
                 </p>
               </div>
-
               <div className="sub-menu">
                 <div className="sub-menu-item">
                   <p>
@@ -131,59 +133,71 @@ const NavBar = ({ isOpen, setIsOpen }) => {
             </div>
           </div>
 
-          <div className="navBar-menu-item">
-            <p
-              onClick={() => navigate("/listInventory")}
-              className={`${
-                location.pathname === "/listInventory" ? "active" : ""
-              }`}
-            >
-              <i className="fa-solid fa-chart-simple icon-navbar"></i>Quản lý
-              kiểm kê
-            </p>
-          </div>
-          <div className="navBar-menu-item">
-            <div className="menu-item-title">
-              <p>
-                <i className="fa-solid fa-chart-simple icon-navbar"></i>Báo cáo
-                thống kê
+          {/* Quản lý kiểm kê - chỉ manager */}
+          {userRole === ROLES.MANAGER && (
+            <div className="navBar-menu-item">
+              <p
+                onClick={() => navigate("/listInventory")}
+                className={`${
+                  location.pathname === "/listInventory" ? "active" : ""
+                }`}
+              >
+                <i className="fa-solid fa-chart-simple icon-navbar"></i>Quản lý
+                kiểm kê
               </p>
-              <div className="sub-menu">
-                <div className="sub-menu-item">
-                  <p
-                    onClick={() => navigate("/report-import")}
-                    className={`${
-                      location.pathname === "/report-import" ? "active" : ""
-                    }`}
-                  >
-                    <i className="fa-solid fa-chevron-right icon-navbar"></i>Báo
-                    cáo nhập kho
-                  </p>
-                  <p
-                    onClick={() => navigate("/report-inventory")}
-                    className={`${
-                      location.pathname === "/report-inventory" ? "active" : ""
-                    }`}
-                  >
-                    <i className="fa-solid fa-chevron-right icon-navbar"></i>Báo
-                    cáo tồn kho
-                  </p>
-                  <p
-                    onClick={() => navigate("/report-export-import-inventory")}
-                    className={`${
-                      location.pathname === "/report-export-import-inventory"
-                        ? "active"
-                        : ""
-                    }`}
-                  >
-                    <i className="fa-solid fa-chevron-right icon-navbar"></i>Báo
-                    cáo xuất nhập tồn
-                  </p>
+            </div>
+          )}
+
+          {/* Báo cáo thống kê - chỉ manager */}
+          {userRole === ROLES.MANAGER && (
+            <div className="navBar-menu-item">
+              <div className="menu-item-title">
+                <p>
+                  <i className="fa-solid fa-chart-simple icon-navbar"></i>Báo
+                  cáo thống kê
+                </p>
+                <div className="sub-menu">
+                  <div className="sub-menu-item">
+                    <p
+                      onClick={() => navigate("/report-import")}
+                      className={`${
+                        location.pathname === "/report-import" ? "active" : ""
+                      }`}
+                    >
+                      <i className="fa-solid fa-chevron-right icon-navbar"></i>
+                      Báo cáo nhập kho
+                    </p>
+                    <p
+                      onClick={() => navigate("/report-inventory")}
+                      className={`${
+                        location.pathname === "/report-inventory"
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <i className="fa-solid fa-chevron-right icon-navbar"></i>
+                      Báo cáo tồn kho
+                    </p>
+                    <p
+                      onClick={() =>
+                        navigate("/report-export-import-inventory")
+                      }
+                      className={`${
+                        location.pathname === "/report-export-import-inventory"
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <i className="fa-solid fa-chevron-right icon-navbar"></i>
+                      Báo cáo xuất nhập tồn
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
+          {/* Danh mục - chung cho cả 2 role */}
           <div className="navBar-menu-item">
             <div className="menu-item-title">
               <p>
