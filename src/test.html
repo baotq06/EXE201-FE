@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMARTPOS - Hệ Thống Quản Lý Kho Thông Minh</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #6c5ce7;
+        --secondary-color: #a29bfe;
+        --accent-color: #fd79a8;
+        --dark-color: #2d3436;
+        --light-color: #f5f6fa;
+        --success-color: #00b894;
+        --warning-color: #fdcb6e;
+        --danger-color: #d63031;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: var(--dark-color);
+        line-height: 1.6;
+      }
+
+      .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JhaW4iIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIi8+PGNpcmNsZSBjeD0iNzUiIGN5PSI3NSIgcj0iMS41IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSIxMCIgcj0iMC41IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ1cmwoI2dyYWluKSIvPjwvc3ZnPg==");
+        animation: grain 8s steps(10) infinite;
+        opacity: 0.3;
+      }
+
+      @keyframes grain {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        10% {
+          transform: translate(-5%, -10%);
+        }
+        20% {
+          transform: translate(-15%, 5%);
+        }
+        30% {
+          transform: translate(7%, -25%);
+        }
+        40% {
+          transform: translate(-5%, 25%);
+        }
+        50% {
+          transform: translate(-15%, 10%);
+        }
+        60% {
+          transform: translate(15%, 0%);
+        }
+        70% {
+          transform: translate(0%, 15%);
+        }
+        80% {
+          transform: translate(3%, -35%);
+        }
+        90% {
+          transform: translate(-10%, 10%);
+        }
+      }
+
+      .floating-shapes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      .shape {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        backdrop-filter: blur(5px);
+        animation: float 15s ease-in-out infinite;
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .shape:nth-child(1) {
+        width: 150px;
+        height: 150px;
+        top: 15%;
+        left: 5%;
+        background: linear-gradient(
+          135deg,
+          rgba(108, 92, 231, 0.2),
+          rgba(253, 121, 168, 0.2)
+        );
+        animation-delay: 0s;
+      }
+
+      .shape:nth-child(2) {
+        width: 200px;
+        height: 200px;
+        top: 65%;
+        right: 8%;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 184, 148, 0.2),
+          rgba(253, 203, 110, 0.2)
+        );
+        animation-delay: 2s;
+      }
+
+      .shape:nth-child(3) {
+        width: 100px;
+        height: 100px;
+        top: 40%;
+        left: 75%;
+        background: linear-gradient(
+          135deg,
+          rgba(214, 48, 49, 0.2),
+          rgba(108, 92, 231, 0.2)
+        );
+        animation-delay: 4s;
+      }
+
+      .shape:nth-child(4) {
+        width: 80px;
+        height: 80px;
+        bottom: 10%;
+        left: 20%;
+        background: linear-gradient(
+          135deg,
+          rgba(253, 203, 110, 0.2),
+          rgba(0, 184, 148, 0.2)
+        );
+        animation-delay: 6s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg) scale(1);
+          border-radius: 50%;
+        }
+        50% {
+          transform: translateY(-40px) rotate(180deg) scale(1.1);
+          border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        }
+      }
+
+      .header-center {
+        width: 100%;
+        text-align: center;
+        padding: 60px 20px 40px;
+        z-index: 2;
+        position: relative;
+      }
+
+      .logo-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 1s ease-out;
+      }
+
+      .logo {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        overflow: hidden;
+        transition: var(--transition);
+        position: relative;
+      }
+
+      .logo::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to bottom right,
+          rgba(255, 255, 255, 0.3) 0%,
+          rgba(255, 255, 255, 0) 60%
+        );
+        transform: rotate(30deg);
+      }
+
+      .logo:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.6);
+      }
+
+      .logo img {
+        width: 60%;
+        height: 60%;
+        object-fit: contain;
+        filter: brightness(0) invert(1);
+      }
+
+      .title {
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin-top: 25px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+        display: inline-block;
+      }
+
+      .title::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        border-radius: 2px;
+      }
+
+      .subtitle {
+        font-size: 1.3rem;
+        color: var(--light-color);
+        margin-top: 15px;
+        font-weight: 300;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+        z-index: 2;
+        animation: slideUp 0.8s ease-out;
+      }
+
+      .main-card {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 28px;
+        padding: 60px 50px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        max-width: 1200px;
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 50px;
+        transition: var(--transition);
+      }
+
+      .main-card:hover {
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+      }
+
+      .left-section {
+        text-align: left;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 30px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: var(--accent-color);
+        border-radius: 3px;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+      }
+
+      .feature {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 30px 25px;
+        border-radius: 18px;
+        border: 1px solid rgba(102, 126, 234, 0.15);
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        transition: var(--transition);
+      }
+
+      .feature:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.25);
+        border-color: rgba(102, 126, 234, 0.3);
+      }
+
+      .feature:hover::before {
+        width: 8px;
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        transition: var(--transition);
+      }
+
+      .feature:hover .feature-icon {
+        transform: scale(1.1);
+        color: var(--accent-color);
+      }
+
+      .feature-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 12px;
+        transition: var(--transition);
+      }
+
+      .feature:hover .feature-title {
+        color: var(--primary-color);
+      }
+
+      .feature-desc {
+        font-size: 0.95rem;
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .right-section {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px 30px;
+        border-radius: 18px;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        height: fit-content;
+        position: sticky;
+        top: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: var(--transition);
+      }
+
+      .right-section:hover {
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        transform: translateY(-3px);
+      }
+
+      .contact-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      .contact-title::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 3px;
+        background: var(--accent-color);
+        border-radius: 3px;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--dark-color);
+        margin-bottom: 8px;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-wrapper i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        font-size: 1rem;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-size: 0.95rem;
+        transition: var(--transition);
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+      }
+
+      .login-button {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: white;
+        border: none;
+        padding: 16px 30px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        width: 100%;
+        margin-top: 10px;
+        box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .login-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: 0.5s;
+      }
+
+      .login-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4);
+      }
+
+      .login-button:hover::before {
+        left: 100%;
+      }
+
+      .forgot-password {
+        display: block;
+        text-align: right;
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 15px;
+        transition: var(--transition);
+      }
+
+      .forgot-password:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 30px 20px;
+        color: var(--light-color);
+        font-size: 0.9rem;
+        position: relative;
+        z-index: 2;
+        margin-top: 40px;
+      }
+
+      .footer a {
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+      }
+
+      .footer a:hover {
+        color: var(--accent-color);
+        text-decoration: underline;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 992px) {
+        .main-card {
+          padding: 50px 40px;
+          gap: 40px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-card {
+          padding: 40px 30px;
+          margin: 20px;
+          grid-template-columns: 1fr;
+          gap: 30px;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+        }
+
+        .right-section {
+          position: static;
+        }
+
+        .title {
+          font-size: 2.2rem;
+        }
+
+        .subtitle {
+          font-size: 1.1rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .header-center {
+          padding: 40px 20px 30px;
+        }
+
+        .logo {
+          width: 80px;
+          height: 80px;
+        }
+
+        .title {
+          font-size: 1.8rem;
+        }
+
+        .subtitle {
+          font-size: 1rem;
+        }
+
+        .main-card {
+          padding: 30px 20px;
+        }
+
+        .feature {
+          padding: 25px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="animated-bg"></div>
+    <div class="floating-shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+
+    <!-- HEADER: Center Logo and Title -->
+    <div class="header-center">
+      <div class="logo-section">
+        <div class="logo">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3713/3713542.png"
+            alt="SMARTPOS Logo"
+          />
+        </div>
+        <h1 class="title">SMARTPOS Kho</h1>
+        <p class="subtitle">
+          Giải pháp quản lý kho thông minh, hiệu quả và tiết kiệm chi phí cho
+          doanh nghiệp của bạn
+        </p>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+      <div class="main-card">
+        <div class="left-section">
+          <h2 class="section-title">Tính Năng Nổi Bật</h2>
+          <div class="features">
+            <div class="feature">
+              <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+              <div class="feature-title">Theo Dõi Tồn Kho</div>
+              <div class="feature-desc">
+                Kiểm tra hàng hóa còn lại trong kho theo thời gian thực với độ
+                chính xác cao, giúp bạn luôn kiểm soát được lượng tồn kho.
+              </div>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">
+                <i class="fas fa-exchange-alt"></i>
+              </div>
+              <div class="feature-title">Quản Lý Nhập/Xuất</div>
+              <div class="feature-desc">
+                Kiểm soát chính xác các hoạt động nhập và xuất kho với hệ thống
+                báo cáo chi tiết, tự động cập nhật số lượng tồn kho.
+              </div>
+            </div>
+            <div class="feature">
+              <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+              <div class="feature-title">Báo Cáo Thống Kê</div>
+              <div class="feature-desc">
+                Phân tích số liệu và lập báo cáo chi tiết theo ngày, tuần, tháng
+                với biểu đồ trực quan, dễ dàng đánh giá hiệu quả kinh doanh.
+              </div>
+            </div>
+            <div class="feature">
+              <div class="feature-icon"><i class="fas fa-lock"></i></div>
+              <div class="feature-title">Bảo Mật Hệ Thống</div>
+              <div class="feature-desc">
+                Bảo vệ thông tin người dùng và dữ liệu kho với hệ thống mã hóa
+                tiên tiến, phân quyền truy cập chi tiết.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-section">
+          <div class="contact-title">Đăng Nhập Hệ Thống</div>
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="username">Tên đăng nhập</label>
+              <div class="input-wrapper">
+                <i class="fas fa-user"></i>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="Nhập tên đăng nhập"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="password">Mật khẩu</label>
+              <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Nhập mật khẩu"
+                  required
+                />
+              </div>
+            </div>
+            <button type="submit" class="login-button">
+              <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+            </button>
+            <a href="#" class="forgot-password">Quên mật khẩu?</a>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>
+        © 2023 SMARTPOS Kho. Bản quyền thuộc về
+        <a href="#">Công ty Cổ phần Giải pháp Quản lý Thông minh</a>
+      </p>
+      <p>
+        Hotline hỗ trợ: <a href="tel:19001234">1900 1234</a> | Email:
+        <a href="mailto:support@smartpos.vn">support@smartpos.vn</a>
+      </p>
+    </div>
+
+    <script>
+      function handleLogin(event) {
+        event.preventDefault();
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!username || !password) {
+          showAlert("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.", "error");
+          return;
+        }
+
+        // Simulate loading
+        const btn = event.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+        btn.disabled = true;
+
+        // Simulate API call
+        setTimeout(() => {
+          if (username === "admin" && password === "admin123") {
+            showAlert("Đăng nhập thành công! Đang chuyển hướng...", "success");
+            // window.location.href = 'dashboard.html';
+          } else {
+            showAlert("Tên đăng nhập hoặc mật khẩu không chính xác.", "error");
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }
+        }, 1500);
+      }
+
+      function showAlert(message, type) {
+        const alertBox = document.createElement("div");
+        alertBox.className = `alert-box ${type}`;
+        alertBox.innerHTML = `
+          <i class="fas ${
+            type === "success" ? "fa-check-circle" : "fa-exclamation-circle"
+          }"></i>
+          <span>${message}</span>
+          <i class="fas fa-times close-alert"></i>
+        `;
+
+        document.body.appendChild(alertBox);
+
+        setTimeout(() => {
+          alertBox.classList.add("show");
+        }, 10);
+
+        alertBox.querySelector(".close-alert").addEventListener("click", () => {
+          alertBox.classList.remove("show");
+          setTimeout(() => {
+            alertBox.remove();
+          }, 300);
+        });
+
+        if (type === "success") {
+          setTimeout(() => {
+            alertBox.classList.remove("show");
+            setTimeout(() => {
+              alertBox.remove();
+            }, 300);
+          }, 3000);
+        }
+      }
+
+      // Add floating effect to shapes on mouse move
+      document.addEventListener("mousemove", (e) => {
+        const shapes = document.querySelectorAll(".shape");
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+
+        shapes.forEach((shape, index) => {
+          const speed = (index + 1) * 0.5;
+          const xMove = (x - 0.5) * speed * 100;
+          const yMove = (y - 0.5) * speed * 100;
+          shape.style.transform = `translate(${xMove}px, ${yMove}px)`;
+        });
+      });
+
+      // Add animation to features on scroll
+      const features = document.querySelectorAll(".feature");
+
+      const featureObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.animation = `fadeIn 0.5s ease-out forwards ${
+                entry.target.dataset.delay || "0s"
+              }`;
+              featureObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      features.forEach((feature, index) => {
+        feature.style.opacity = "0";
+        feature.dataset.delay = `${index * 0.1}s`;
+        featureObserver.observe(feature);
+      });
+    </script>
+  </body>
+</html>
