@@ -6,7 +6,7 @@ import { logout } from '@/api/userAPI/user';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const Header = ({isOpen, setIsOpen}) => {
+const Header = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,9 +22,9 @@ const Header = ({isOpen, setIsOpen}) => {
 
   return (
     <div className="headercontaint">
-      <i className="fa-solid fa-bars" style={{display:"flex", alignItems: "center", marginLeft: "20px"}} onClick={() => setIsOpen(!isOpen)}></i>
+      <i className="fa-solid fa-bars" style={{ display: "flex", alignItems: "center", marginLeft: "20px" }} onClick={() => setIsOpen(!isOpen)}></i>
       <p className="tenheader">
-        <i className="fa-solid fa-star-half-stroke"></i>Công Ty ABC
+        <i className="fa-solid fa-star-half-stroke"></i>MPOS
       </p>
       <div className="iconheader">
         <i className="fa-solid fa-bell"></i>

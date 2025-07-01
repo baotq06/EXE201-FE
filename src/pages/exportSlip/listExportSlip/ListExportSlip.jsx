@@ -15,6 +15,8 @@ import ConfirmDeleteProduct from "@/components/confirmDeleteProduct/ConfirmDelet
 
 import "./ListExportSlip.css";
 import Layout from "@/components/layout/Layout";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 const ListExportSlip = () => {
   const navigate = useNavigate();
   const { type } = useParams();
@@ -159,6 +161,73 @@ const ListExportSlip = () => {
     setShowDelete(false);
   };
 
+  // Function to handle file download
+  const handleDownload = async (exportSlipId) => {
+    console.log(`Requesting file download for exportSlipId: ${exportSlipId}`);
+    const token = localStorage.getItem("token");
+    localStorage.setItem('token', token); // Lưu token vào localStorage
+
+    console.log("token: ", token)
+    // Kiểm tra nếu không có token
+    if (!token) {
+      alert("Bạn chưa đăng nhập hoặc token đã hết hạn");
+      return;
+    }
+
+    try {
+
+
+      // Gửi yêu cầu GET đúng endpoint
+      const res = await fetch(`http://localhost:5789/api/dowload/export/${exportSlipId}?type=txt`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // Gửi token trong header
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch the file. Status: ${res.status}`);
+      }
+
+      // Nếu nhận về HTML thay vì file => có lỗi
+      const contentType = res.headers.get("Content-Type");
+      if (contentType && contentType.includes("text/html")) {
+        const text = await res.text();
+        console.error("Lỗi từ server (HTML):", text);
+        throw new Error("Server returned HTML instead of file");
+      }
+
+      // Lấy tên file từ Content-Disposition (nếu có)
+      const contentDisposition = res.headers.get("Content-Disposition");
+      let fileName = `exportSlip_${exportSlipId}.txt`;
+
+      if (contentDisposition && contentDisposition.includes("filename=")) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match && match[1]) {
+          fileName = decodeURIComponent(match[1]);
+        }
+      }
+
+      // Lấy blob từ phản hồi
+      const blob = await res.blob();
+
+      // Tạo và nhấp vào link tải
+      const link = document.createElement("a");
+      const url = window.URL.createObjectURL(blob);
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // Dọn dẹp
+    } catch (error) {
+      console.error("Error downloading file:", error.message);
+      alert("Không thể tải file. Vui lòng thử lại.");
+    }
+  };
+
+
   return (
     <>
       <Layout>
@@ -275,14 +344,14 @@ const ListExportSlip = () => {
                           exportSlip.status === "PENDING"
                             ? "button1_ListExportSlip"
                             : exportSlip.status === "DONE"
-                            ? "button2_ListExportSlip"
-                            : exportSlip.status === "REJECTED"
-                            ? "button3_ListExportSlip"
-                            : exportSlip.status === "CONFIRMED"
-                            ? "button_ListExportSlip"
-                            : exportSlip.status === "RETURNED"
-                            ? "button4_ListExportSlip"
-                            : ""
+                              ? "button2_ListExportSlip"
+                              : exportSlip.status === "REJECTED"
+                                ? "button3_ListExportSlip"
+                                : exportSlip.status === "CONFIRMED"
+                                  ? "button_ListExportSlip"
+                                  : exportSlip.status === "RETURNED"
+                                    ? "button4_ListExportSlip"
+                                    : ""
                         }
                         onChange={(e) =>
                           handleUpdateStatus(exportSlip._id, e.target.value)
@@ -293,28 +362,28 @@ const ListExportSlip = () => {
                             exportSlip.status === "PENDING"
                               ? "button1_ListExportSlip"
                               : exportSlip.status === "DONE"
-                              ? "button2_ListExportSlip"
-                              : exportSlip.status === "REJECTED"
-                              ? "button3_ListExportSlip"
-                              : exportSlip.status === "CONFIRMED"
-                              ? "button_ListExportSlip"
-                              : exportSlip.status === "RETURNED"
-                              ? "button4_ListExportSlip"
-                              : ""
+                                ? "button2_ListExportSlip"
+                                : exportSlip.status === "REJECTED"
+                                  ? "button3_ListExportSlip"
+                                  : exportSlip.status === "CONFIRMED"
+                                    ? "button_ListExportSlip"
+                                    : exportSlip.status === "RETURNED"
+                                      ? "button4_ListExportSlip"
+                                      : ""
                           }
                           value={exportSlip.status}
                         >
                           {exportSlip.status === "PENDING"
                             ? "Chờ duyệt"
                             : exportSlip.status === "DONE"
-                            ? "Đã xuất"
-                            : exportSlip.status === "REJECTED"
-                            ? "Từ chối"
-                            : exportSlip.status === "CONFIRMED"
-                            ? "Đã duyệt"
-                            : exportSlip.status === "RETURNED"
-                            ? "Hoàn hàng"
-                            : ""}
+                              ? "Đã xuất"
+                              : exportSlip.status === "REJECTED"
+                                ? "Từ chối"
+                                : exportSlip.status === "CONFIRMED"
+                                  ? "Đã duyệt"
+                                  : exportSlip.status === "RETURNED"
+                                    ? "Hoàn hàng"
+                                    : ""}
                         </option>
                         <option
                           className="button1_ListExportSlip"
@@ -352,12 +421,24 @@ const ListExportSlip = () => {
                       >
                         <i className="fa-solid fa-pen penListExportSlip"></i>
                       </span>
+
                       <span
                         className="bin_ListExportSlip"
                         onClick={() => handleClickBin(exportSlip._id)}
                       >
                         <i className="fa-solid fa-trash binListExportSlip"></i>
                       </span>
+
+                      <p></p>
+
+                      <span
+                        className="download_ListExportSlip"
+                        onClick={() => handleDownload(exportSlip._id)} // Trigger the download
+                        title="Tải xuống"
+                      >
+                        <i className="fas fa-download downloadIcon" style={{ fontSize: "16px", color: "#007bff" }}></i>
+                      </span>
+
                     </td>
                   </tr>
                 ))}
