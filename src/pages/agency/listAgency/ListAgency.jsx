@@ -24,7 +24,7 @@ const ListAgency = () => {
   const [deletedId, setDeletedId] = useState("");
 
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const getListSupplies = async () => {
       try {
