@@ -7,7 +7,7 @@ import Header from "../../../components/header/Header";
 import { registerAPI } from "@/api/userAPI/user";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { registerValidation } from "@/utils/validation.js/userValidation";
+import { registerValidation } from "@/utils/validation/userValidation";
 import image4 from "@/assets/images/image4.png";
 
 const Register = () => {
