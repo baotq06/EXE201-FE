@@ -11,6 +11,7 @@ import ConfirmDeleteProduct from "@/components/confirmDeleteProduct/ConfirmDelet
 
 import "./ListImportSlip.css";
 import Layout from "@/components/layout/Layout";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const ListImportSlip = () => {
   const { type } = useParams();
@@ -130,6 +131,69 @@ const ListImportSlip = () => {
 
   const handleCancelDelete = () => {
     setShowDelete(false);
+  };
+
+  // Function to handle file download
+  const handleDownload = async (importSlipId) => {
+    console.log(`Requesting file download for importSlipId: ${importSlipId}`);
+
+    try {
+      // const token = localStorage.getItem("token");
+      // console.log("Token từ localStorage:", token); // Log token để kiểm tra
+
+      // if (!token) {
+      //   alert("Token không có hoặc hết hạn");
+      //   return;
+      // }
+
+      // Gửi yêu cầu GET đúng endpoint
+      const res = await fetch(`http://localhost:5789/api/dowload/import/${importSlipId}?type=txt`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // "Authorization": `Bearer ${token}`, // Gửi token trong header
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch the file. Status: ${res.status}`);
+      }
+
+      // Nếu nhận về HTML thay vì file => có lỗi
+      const contentType = res.headers.get("Content-Type");
+      if (contentType && contentType.includes("text/html")) {
+        const text = await res.text();
+        console.error("Lỗi từ server (HTML):", text);
+        throw new Error("Server returned HTML instead of file");
+      }
+
+      // Lấy tên file từ Content-Disposition (nếu có)
+      const contentDisposition = res.headers.get("Content-Disposition");
+      let fileName = `exportSlip_${importSlipId}.txt`;
+
+      if (contentDisposition && contentDisposition.includes("filename=")) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match && match[1]) {
+          fileName = decodeURIComponent(match[1]);
+        }
+      }
+
+      // Lấy blob từ phản hồi
+      const blob = await res.blob();
+
+      // Tạo và nhấp vào link tải
+      const link = document.createElement("a");
+      const url = window.URL.createObjectURL(blob);
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // Dọn dẹp
+    } catch (error) {
+      console.error("Error downloading file:", error.message);
+      alert("Không thể tải file. Vui lòng thử lại.");
+    }
   };
 
   return (
@@ -256,12 +320,12 @@ const ListImportSlip = () => {
                             importSlip.status === "PENDING"
                               ? "button1_ListImportSlip"
                               : importSlip.status === "DONE"
-                              ? "button2_ListImportSlip"
-                              : importSlip.status === "REJECTED"
-                              ? "button3_ListImportSlip"
-                              : importSlip.status === "CONFIRMED"
-                              ? "button_ListImportSlip"
-                              : ""
+                                ? "button2_ListImportSlip"
+                                : importSlip.status === "REJECTED"
+                                  ? "button3_ListImportSlip"
+                                  : importSlip.status === "CONFIRMED"
+                                    ? "button_ListImportSlip"
+                                    : ""
                           }
                           onChange={(e) =>
                             handleUpdateStatus(importSlip._id, e.target.value)
@@ -272,24 +336,24 @@ const ListImportSlip = () => {
                               importSlip.status === "PENDING"
                                 ? "button1_ListImportSlip"
                                 : importSlip.status === "DONE"
-                                ? "button2_ListImportSlip"
-                                : importSlip.status === "REJECTED"
-                                ? "button3_ListImportSlip"
-                                : importSlip.status === "CONFIRMED"
-                                ? "button_ListImportSlip"
-                                : ""
+                                  ? "button2_ListImportSlip"
+                                  : importSlip.status === "REJECTED"
+                                    ? "button3_ListImportSlip"
+                                    : importSlip.status === "CONFIRMED"
+                                      ? "button_ListImportSlip"
+                                      : ""
                             }
                             value={importSlip.status}
                           >
                             {importSlip.status === "PENDING"
                               ? "Chờ duyệt"
                               : importSlip.status === "DONE"
-                              ? "Đã nhập"
-                              : importSlip.status === "REJECTED"
-                              ? "Từ chối"
-                              : importSlip.status === "CONFIRMED"
-                              ? "Đã duyệt"
-                              : ""}
+                                ? "Đã nhập"
+                                : importSlip.status === "REJECTED"
+                                  ? "Từ chối"
+                                  : importSlip.status === "CONFIRMED"
+                                    ? "Đã duyệt"
+                                    : ""}
                           </option>
                           <option
                             className="button1_ListImportSlip"
@@ -329,6 +393,16 @@ const ListImportSlip = () => {
                           onClick={() => handleClickBin(importSlip._id)}
                         >
                           <i className="fa-solid fa-trash binListImportSlip"></i>
+                        </span>
+
+                        <p></p>
+
+                        <span
+                          className="download_ListExportSlip"
+                          onClick={() => handleDownload(importSlip._id)} // Trigger the download
+                          title="Tải xuống"
+                        >
+                          <i className="fas fa-download downloadIcon" style={{ fontSize: "16px", color: "#007bff" }}></i>
                         </span>
                       </td>
                     </tr>
