@@ -10,7 +10,7 @@ npm run dev
 
 - Cài đặt frontend
 ```
-git clone https://github.com/Nguyenthithuhang0406/QuanLyKhoHang_FE_TTCSN.git
+git clone
 ```
 - Chạy frontend
 ```
