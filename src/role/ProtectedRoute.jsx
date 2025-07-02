@@ -7,17 +7,14 @@ const ProtectedRoute = ({ children, userRole }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  // Kiểm tra nếu là route công khai
   if (PUBLIC_ROUTES.includes(currentPath)) {
     return children;
   }
 
-  // Kiểm tra đăng nhập
   if (!userRole) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Kiểm tra quyền truy cập
   const matchingRoute = Object.keys(ROUTE_PERMISSIONS).find((route) => {
     const routePattern = new RegExp(
       "^" + route.replace(/:[^/]+/g, "[^/]+") + "$"

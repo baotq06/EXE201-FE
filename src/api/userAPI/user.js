@@ -90,6 +90,9 @@ export const login = async (data) => {
 export const logout = async () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("role");
+  localStorage.removeItem("username");
 };
 
 export const getRefreshToken = async () => {
